@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极客笔记 GeekNote</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Icons Def -->
+    <svg style="display: none;">
+        <symbol id="icon-plus" viewBox="0 0 24 24">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+        </symbol>
+        <symbol id="icon-search" viewBox="0 0 24 24">
+            <path
+                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+        </symbol>
+        <symbol id="icon-doc" viewBox="0 0 24 24">
+            <path
+                d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+        </symbol>
+        <symbol id="icon-notes" viewBox="0 0 24 24">
+            <path d="M3 18h12v-2H3v2zM3 6v2h18V6H3zm0 7h18v-2H3v2z" />
+        </symbol>
+        <symbol id="icon-theme" viewBox="0 0 24 24">
+            <path
+                d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
+        </symbol>
+        <symbol id="icon-trash" viewBox="0 0 24 24">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+        </symbol>
+        <symbol id="icon-color-text" viewBox="0 0 24 24">
+            <path d="M0 20h24v4H0zM11 3L5.5 17h2.25l1.12-3h6.25l1.12 3h2.25L13 3h-2zm-1.38 9L12 5.67 14.38 12H9.62z" />
+        </symbol>
+        <symbol id="icon-color-fill" viewBox="0 0 24 24">
+            <path
+                d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5zM2 20h20v4H2z" />
+        </symbol>
+    </svg>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <svg class="icon">
+                        <use xlink:href="#icon-doc"></use>
+                    </svg>
+                    极客笔记
+                </div>
+                <button id="btn-theme-toggle" class="icon-btn" title="切换主题">
+                    <svg class="icon">
+                        <use xlink:href="#icon-theme"></use>
+                    </svg>
+                </button>
+            </div>
+
+            <button id="btn-new-note" class="btn-new">
+                <svg class="icon">
+                    <use xlink:href="#icon-plus"></use>
+                </svg>
+                新建笔记
+            </button>
+
+            <div class="search-container">
+                <svg class="search-icon icon">
+                    <use xlink:href="#icon-search"></use>
+                </svg>
+                <input type="text" id="search-input" class="search-box" placeholder="搜索笔记...">
+            </div>
+
+            <div class="toolbar-row"
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0 4px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <select id="sort-select" class="sort-select">
+                        <option value="updatedAt">按修改时间</option>
+                        <option value="createdAt">按创建时间</option>
+                        <option value="title">按标题</option>
+                    </select>
+                    <button id="btn-sort-order" class="icon-btn" title="切换排序顺序">↓</button>
+                </div>
+                <div style="display: flex; gap: 4px;">
+                    <button id="btn-new-folder" class="icon-btn" title="新建文件夹">📁</button>
+                    <button id="btn-export" class="icon-btn" title="导出数据">⬇</button>
+                    <button id="btn-import" class="icon-btn" title="导入数据">⬆</button>
+                    <input type="file" id="file-import" accept=".json" style="display:none;">
+                    <button id="btn-batch-delete" class="icon-btn hidden" title="删除选中" style="color: #ff4d4d;">
+                        <svg class="icon">
+                            <use xlink:href="#icon-trash"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="note-list" class="note-list-container">
+            <!-- Note items will be injected here -->
+        </div>
+    </aside>
+
+    <main class="editor">
+        <!-- Floating Image Toolbar -->
+        <div id="image-toolbar" class="image-toolbar hidden">
+            <div class="image-toolbar-header">
+                <span>布局选项</span>
+                <button id="btn-close-img-toolbar" class="icon-btn-small">×</button>
+            </div>
+            <div class="layout-options">
+                <button class="layout-btn" data-mode="inline" title="嵌入型 (Inline)">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 19h18v2H3v-2zm0-6h18v2H3v-2zm0-6h18v2H3V7zm0-4h18v2H3V3z" />
+                    </svg>
+                </button>
+                <button class="layout-btn" data-mode="left" title="左环绕 (Float Left)">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M14 3H3v10h11V3zM3 15h18v2H3v-2zm0 4h18v2H3v-2zM16 3h5v2h-5V3zm0 4h5v2h-5V7zm0 4h5v2h-5v-2z" />
+                    </svg>
+                </button>
+                <button class="layout-btn" data-mode="right" title="右环绕 (Float Right)">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M10 3H3v2h7V3zm0 4H3v2h7V7zm0 4H3v2h7v-2zM13 3h8v10h-8V3zM3 15h18v2H3v-2zm0 4h18v2H3v-2z" />
+                    </svg>
+                </button>
+                <button class="layout-btn" data-mode="center" title="上下型 (Break Text)">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 3h18v2H3V3zm0 16h18v2H3v-2zm2-12h14v10H5V7z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="image-actions">
+                <button id="btn-img-cut" title="剪切 (Ctrl+X)">✂ 剪切</button>
+            </div>
+        </div>
+        <div id="toast" class="toast hidden">已保存</div>
+        <div id="empty-state" class="empty-state">
+            <svg class="icon">
+                <use xlink:href="#icon-doc"></use>
+            </svg>
+            <div class="empty-text">选择或创建一篇新笔记</div>
+        </div>
+        <div id="editor-container" class="editor-content-wrapper hidden">
+            <div id="toolbar" class="toolbar hidden">
+                <!-- Text Format -->
+                <button data-cmd="bold" title="加粗" class="tb-bold">𝐁</button>
+                <button data-cmd="italic" title="斜体" class="tb-italic">𝑰</button>
+                <button data-cmd="underline" title="下划线" class="tb-underline">U̲</button>
+                <div class="separator"></div>
+
+                <!-- Alignment -->
+                <button data-cmd="justifyLeft" title="左对齐">⬅</button>
+                <button data-cmd="justifyCenter" title="居中">⬛</button>
+                <button data-cmd="justifyRight" title="右对齐">➡</button>
+                <div class="separator"></div>
+
+                <!-- Font Size -->
+                <button data-cmd="fontSize" data-val="5" title="大号字" class="tb-size-lg">大</button>
+                <button data-cmd="fontSize" data-val="3" title="中号字" class="tb-size-md">中</button>
+                <button data-cmd="fontSize" data-val="2" title="小号字" class="tb-size-sm">小</button>
+                <div class="separator"></div>
+
+                <!-- Colors -->
+                <div style="position:relative;display:inline-block;">
+                    <button id="btn-color-text" title="文字颜色">🎨</button>
+                    <div id="popup-color-text" class="color-popup"></div>
+                </div>
+                <div style="position:relative;display:inline-block;">
+                    <button id="btn-color-fill" title="背景色">🖌️</button>
+                    <div id="popup-color-fill" class="color-popup"></div>
+                </div>
+                <div class="separator"></div>
+
+                <!-- Block Format -->
+                <button data-cmd="formatBlock" data-val="H2" title="标题" class="tb-h1">H1</button>
+                <button data-cmd="formatBlock" data-val="H3" title="小标题" class="tb-h2">H2</button>
+                <button data-cmd="insertUnorderedList" title="无序列表">📝</button>
+                <button data-cmd="insertOrderedList" title="有序列表">📋</button>
+                <div class="separator"></div>
+
+                <!-- Insert Image -->
+                <button id="btn-insert-image" title="插入图片">🖼️</button>
+                <input type="file" id="file-image-insert" accept="image/*" style="display:none;">
+            </div>
+
+            <!-- Title Toolbar -->
+            <div id="title-toolbar" class="title-toolbar hidden">
+                <button data-cmd="justifyLeft" title="左对齐">⬅</button>
+                <button data-cmd="justifyCenter" title="居中">⬛</button>
+                <button data-cmd="justifyRight" title="右对齐">➡</button>
+                <div class="separator"></div>
+                <button data-cmd="bold" title="加粗">𝐁</button>
+                <button data-cmd="italic" title="斜体">𝑰</button>
+                <button data-cmd="underline" title="下划线">U̲</button>
+                <div class="separator"></div>
+                <div style="position:relative;display:inline-block;">
+                    <button id="btn-title-color-text" title="文字颜色">🎨</button>
+                    <div id="popup-title-color-text" class="color-popup"></div>
+                </div>
+                <div style="position:relative;display:inline-block;">
+                    <button id="btn-title-color-fill" title="背景色">🖌️</button>
+                    <div id="popup-title-color-fill" class="color-popup"></div>
+                </div>
+            </div>
+
+            <div id="note-title" class="note-title-input" contenteditable="true" spellcheck="false" placeholder="无标题">
+            </div>
+
+            <!-- Note Metadata & Tags -->
+            <div id="note-metadata" class="note-metadata">
+                <span id="note-created">创建于: --</span>
+                <span class="meta-separator">|</span>
+                <span id="note-edited">编辑于: --</span>
+
+                <!-- Tags moved here -->
+                <div id="tags-container" class="tags-container">
+                    <div id="tags-list" class="tag-list"></div>
+                    <button id="add-tag-btn" class="add-tag-btn" title="添加标签">+</button>
+                </div>
+            </div>
+
+            <div id="note-content" class="note-body" contenteditable="true" spellcheck="false" placeholder="在此输入内容...">
+            </div>
+        </div>
+    </main>
+
+    <!-- 通用模态框 -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div id="modal-message" class="modal-message"></div>
+            <input type="text" id="modal-input" class="modal-input hidden" placeholder="">
+            <div class="modal-buttons">
+                <button id="modal-cancel" class="modal-btn modal-btn-cancel hidden">取消</button>
+                <button id="modal-confirm" class="modal-btn modal-btn-confirm">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Developer Easter Egg Modal -->
+    <div id="easter-egg-overlay" class="easter-egg-overlay hidden">
+        <div class="easter-egg-card">
+            <div class="easter-egg-close">×</div>
+            <div class="easter-egg-content">
+                <div class="easter-egg-title" id="easter-egg-title"></div>
+                <a href="mailto:wwsawwsa98@gmail.com" class="easter-egg-email">wwsawwsa98@gmail.com</a>
+                <div class="easter-egg-version">Build 2026.01.14</div>
+                <div class="easter-egg-slogan">Designed with &lt;code/&gt; &amp; ☕</div>
+                <div class="easter-egg-copyright">© 2026 wwsa. All Rights Reserved.</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
